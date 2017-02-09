@@ -10,7 +10,6 @@ $(function() {
   // Initialize variables
   var $window = $(window);
   var $usernameInput = $('.usernameInput'); // Input for username
-  var $userroom    = $('.userroom');
   var $messages = $('.messages'); // Messages area
   var $inputMessage = $('.inputMessage'); // Input message input box
 
@@ -19,7 +18,6 @@ $(function() {
 
   // Prompt for setting a username
   var username;
-  var usr_room = '';
   var connected = false;
   var typing = false;
   var lastTypingTime;
@@ -40,9 +38,6 @@ $(function() {
   // Sets the client's username
   function setUsername () {
     username = cleanInput($usernameInput.val().trim());
-    usr_room = cleanInput($userroom.val().trim());
-
-    var user_info = {username: username,room:usr_room};
 
     // If the username is valid
     if (username) {
@@ -52,7 +47,7 @@ $(function() {
       $currentInput = $inputMessage.focus();
 
       // Tell the server your username
-      socket.emit('add user', user_info);
+      socket.emit('add user', username);
     }
   }
 
@@ -66,8 +61,7 @@ $(function() {
       $inputMessage.val('');
       addChatMessage({
         username: username,
-        message: message,
-        room: usr_room
+        message: message
       });
       // tell server to execute 'new message' and send along one parameter
       socket.emit('new message', message);
@@ -277,8 +271,7 @@ $(function() {
   socket.on('reconnect', function () {
     log('you have been reconnected');
     if (username) {
-      var user_info = {username: username,room:usr_room}
-      socket.emit('add user', user_info);
+      socket.emit('add user', username);
     }
   });
 
